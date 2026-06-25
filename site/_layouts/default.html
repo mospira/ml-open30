@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <base href="{{ '/' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="{{ '/' | relative_url }}">Open30 Research</a>
+      <nav>
+        <a href="{{ '/research_report/' | relative_url }}">Research Report</a>
+      </nav>
+    </header>
+    <main class="page">
+      {{ content }}
+    </main>
+    <footer class="site-footer">
+      Research and education only. Not financial advice.
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Python environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated data and model artifacts
+data/raw/
+data/processed/
+data/experiments/
+data/interim/**
+!data/interim/
+!data/interim/canonical/
+!data/interim/canonical/universe_top25.json
+!data/interim/canonical/universe_sp500.json
+*.parquet
+
+models/**
+!models/
+!models/.gitkeep
+
+reports/**
+!reports/
+!reports/.gitkeep
+
+# Local GitHub Pages builds
+_site/
+.jekyll-cache/
+.sass-cache/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

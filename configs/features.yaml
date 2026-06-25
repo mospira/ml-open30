@@ -1,0 +1,315 @@
+# configs/features.yaml
+#
+# Canonical feature catalog for research.
+# Runtime note:
+# - assemble_features.py currently reads only `feature_groups.*.features[].name`
+#   and `normalize`.
+# - Everything else is documentation and should match the produced parquet
+#   columns in data/processed/features_table.parquet.
+
+feature_groups:
+  price_context:
+    description: >
+      Gap, prior-day range, and recent directional context derived from
+      daily OHLCV bars.
+    features:
+      - name: gap_pct
+        source: daily_bars
+        lookback: 1
+        formula: "(open_t - close_t-1) / close_t-1"
+        normalize: none
+      - name: open_loc_vs_prior_range
+        source: daily_bars
+        lookback: 1
+        formula: "(open_t - low_t-1) / (high_t-1 - low_t-1)"
+        normalize: none
+      - name: prior_day_return
+        source: daily_bars
+        lookback: 1
+        formula: "(close_t-1 - open_t-1) / open_t-1"
+        normalize: none
+      - name: prior_day_range
+        source: daily_bars
+        lookback: 1
+        formula: "(high_t-1 - low_t-1) / close_t-1"
+        normalize: none
+      - name: prior_day_true_range
+        source: daily_bars
+        lookback: 2
+        formula: "max(high-low, abs(high-close_t-2), abs(low-close_t-2)) for t-1"
+        normalize: none
+      - name: prior_day_return_avg_5
+        source: daily_bars
+        lookback: 5
+        formula: "5-day rolling mean of prior_day_return"
+        normalize: none
+      - name: prior_day_range_avg_5
+        source: daily_bars
+        lookback: 5
+        formula: "5-day rolling mean of prior_day_range"
+        normalize: none
+      - name: return_3d
+        source: daily_bars
+        lookback: 4
+        formula: "(close_t-1 - close_t-4) / close_t-4"
+        normalize: none
+      - name: return_5d
+        source: daily_bars
+        lookback: 6
+        formula: "(close_t-1 - close_t-6) / close_t-6"
+        normalize: none
+      - name: return_10d
+        source: daily_bars
+        lookback: 11
+        formula: "(close_t-1 - close_t-11) / close_t-11"
+        normalize: none
+      - name: return_20d
+        source: daily_bars
+        lookback: 21
+        formula: "(close_t-1 - close_t-21) / close_t-21"
+        normalize: none
+      - name: rolling_slope_10d
+        source: daily_bars
+        lookback: 10
+        formula: "Normalized rolling OLS slope of close over the prior 10 days"
+        normalize: none
+      - name: gap_vs_atr
+        source: daily_bars
+        lookback: 14
+        formula: "(open_t - close_t-1) / atr_14_t-1"
+        normalize: none
+
+  volatility_regime:
+    description: >
+      Prior-day volatility state and realized movement regime.
+    features:
+      - name: atr_14
+        source: daily_bars
+        lookback: 14
+        formula: "Shifted 14-day ATR"
+        normalize: none
+      - name: atr_pct
+        source: daily_bars
+        lookback: 14
+        formula: "atr_14 / close_t-1"
+        normalize: none
+      - name: realized_vol_10d
+        source: daily_bars
+        lookback: 10
+        formula: "10-day rolling std of daily log returns, shifted"
+        normalize: none
+      - name: realized_vol_20d
+        source: daily_bars
+        lookback: 20
+        formula: "20-day rolling std of daily log returns, shifted"
+        normalize: none
+      - name: range_expansion
+        source: daily_bars
+        lookback: 5
+        formula: "true_range_t-1 / mean(true_range over prior 5 days)"
+        normalize: none
+
+  liquidity:
+    description: >
+      Liquidity and tradability proxies from prior daily volume and intraday range.
+    features:
+      - name: dollar_volume_prev
+        source: daily_bars
+        lookback: 1
+        formula: "close_t-1 * volume_t-1"
+        normalize: log1p
+      - name: dollar_volume_avg_10d
+        source: daily_bars
+        lookback: 10
+        formula: "10-day rolling mean of daily dollar volume, shifted"
+        normalize: log1p
+      - name: volume_avg_20d
+        source: daily_bars
+        lookback: 20
+        formula: "20-day rolling mean of volume, shifted"
+        normalize: none
+      - name: volume_zscore
+        source: daily_bars
+        lookback: 20
+        formula: "Z-score of prior-day volume vs shifted 20-day mean/std"
+        normalize: none
+      - name: spread_proxy
+        source: 1min_bars
+        lookback: 1
+        formula: "median(high-low) over prior RTH day / close_t-1"
+        normalize: none
+
+  open_window:
+    description: >
+      Features observable from the 09:30 bar and prior open-window history.
+      Entry remains at 09:31 ET.
+    observation_delay_minutes: 1
+    features:
+      - name: first_1m_return
+        source: 1min_bars
+        lookback: 0
+        formula: "(close_0930 / open_0930) - 1"
+        normalize: none
+      - name: opening_range_1m_vs_atr
+        source: 1min_bars + daily_bars
+        lookback: 14
+        formula: "(high_0930 - low_0930) / atr_14_t-1"
+        normalize: none
+      - name: first_1m_body_ratio
+        source: 1min_bars
+        lookback: 0
+        formula: "(close_0930 - open_0930) / (high_0930 - low_0930)"
+        normalize: none
+      - name: first_1m_upper_wick
+        source: 1min_bars
+        lookback: 0
+        formula: "(high_0930 - max(open_0930, close_0930)) / range_0930"
+        normalize: none
+      - name: first_1m_lower_wick
+        source: 1min_bars
+        lookback: 0
+        formula: "(min(open_0930, close_0930) - low_0930) / range_0930"
+        normalize: none
+      - name: early_realized_vol_1m
+        source: 1min_bars
+        lookback: 0
+        formula: "abs(log(close_0930 / open_0930))"
+        normalize: none
+      - name: early_relative_volume
+        source: 1min_bars
+        lookback: 20
+        formula: "vol_0930 / rolling mean of prior 20 vol_0930 observations"
+        normalize: none
+
+  market_alignment:
+    description: >
+      Benchmark alignment features built from SPY/QQQ and stock daily returns.
+    benchmark_tickers: [SPY, QQQ]
+    features:
+      - name: spy_open_return
+        source: benchmark_daily_bars
+        lookback: 1
+        formula: "(SPY open_t - SPY close_t-1) / SPY close_t-1"
+        normalize: none
+      - name: qqq_open_return
+        source: benchmark_daily_bars
+        lookback: 1
+        formula: "(QQQ open_t - QQQ close_t-1) / QQQ close_t-1"
+        normalize: none
+      - name: residual_move
+        source: daily_bars + benchmark_daily_bars
+        lookback: 60
+        formula: "gap_pct - rolling_beta_spy_60d * spy_open_return"
+        normalize: none
+      - name: rolling_beta_spy_60d
+        source: daily_bars + benchmark_daily_bars
+        lookback: 60
+        formula: "Shifted 60-day rolling beta of stock returns vs SPY"
+        normalize: none
+      - name: rolling_corr_spy_20d
+        source: daily_bars + benchmark_daily_bars
+        lookback: 20
+        formula: "Shifted 20-day rolling correlation of stock returns vs SPY"
+        normalize: none
+
+  calendar:
+    description: >
+      Calendar and trading-day context.
+    source: pandas_market_calendars
+    features:
+      - name: day_of_week
+        formula: "Monday=0 ... Friday=4"
+        normalize: none
+      - name: month
+        formula: "Calendar month number"
+        normalize: none
+      - name: is_post_holiday
+        formula: "1 if prior NYSE trading day was before the previous business day"
+        normalize: none
+      - name: is_opex_week
+        formula: "1 if date falls in the Monday-Friday window of the third Friday"
+        normalize: none
+
+  mean_reversion_regime:
+    description: >
+      Regime features describing prior-day trendiness and gap behavior.
+    features:
+      - name: prior_day_trendiness
+        source: daily_bars
+        lookback: 2
+        formula: "(close_t-1 - open_t-1) / true_range_t-1"
+        normalize: none
+      - name: close_location_in_range
+        source: daily_bars
+        lookback: 1
+        formula: "(close_t-1 - low_t-1) / (high_t-1 - low_t-1)"
+        normalize: none
+      - name: gap_up_freq_10d
+        source: daily_bars
+        lookback: 10
+        formula: "10-day rolling mean of positive-gap days, shifted"
+        normalize: none
+      - name: gap_down_freq_10d
+        source: daily_bars
+        lookback: 10
+        formula: "10-day rolling mean of negative-gap days, shifted"
+        normalize: none
+      - name: avg_post_gap_30m_drift_10d
+        source: 1min_bars
+        lookback: 10
+        formula: "Mean 09:30-to-10:00 drift over the last 10 prior gap days"
+        normalize: none
+
+  sentiment:
+    description: >
+      Daily sentiment aggregates and interaction terms from Alpha Vantage news.
+      The live-safe aggregation window is [prev_trading_day 00:00 ET, trade_day 09:30 ET].
+    source: sentiment_daily
+    join_key: [ticker, date]
+    window: "[prev_trading_day 00:00 ET, trade_day 09:30 ET]"
+    features:
+      - name: sentiment_avg
+        source: sentiment_daily
+        lookback: 1
+        formula: "Mean overall_sentiment_score over the sentiment window"
+        normalize: none
+      - name: article_count
+        source: sentiment_daily
+        lookback: 1
+        formula: "Count of articles in the sentiment window"
+        normalize: none
+      - name: sentiment_sum
+        source: sentiment_daily
+        lookback: 1
+        formula: "Sum of overall_sentiment_score over the sentiment window"
+        normalize: log1p
+      - name: sentiment_max
+        source: sentiment_daily
+        lookback: 1
+        formula: "Max overall_sentiment_score over the sentiment window"
+        normalize: none
+      - name: sentiment_min
+        source: sentiment_daily
+        lookback: 1
+        formula: "Min overall_sentiment_score over the sentiment window"
+        normalize: none
+      - name: sentiment_std
+        source: sentiment_daily
+        lookback: 1
+        formula: "Stddev of overall_sentiment_score over the sentiment window"
+        normalize: none
+      - name: sentiment_avg_x_gap
+        source: sentiment_daily + daily_bars
+        lookback: 1
+        formula: "sentiment_avg * gap_pct"
+        normalize: none
+      - name: sentiment_avg_x_atr_pct
+        source: sentiment_daily + daily_bars
+        lookback: 14
+        formula: "sentiment_avg * atr_pct"
+        normalize: none
+      - name: sentiment_avg_x_market_dir
+        source: sentiment_daily + benchmark_daily_bars
+        lookback: 1
+        formula: "sentiment_avg * sign(spy_open_return)"
+        normalize: none

@@ -1,0 +1,52 @@
+schema_version: 1
+architecture_id: v1_3
+name: Open30 v1.3 Single Head Tighter Threshold
+description: >
+  Single-head raw-EV XGBoost architecture for the 30-minute open-session
+  strategy. Trains and selects only the m=1.5 head, then tunes the EV
+  threshold on each retrain using a tighter held-out threshold grid that
+  starts at 0.075.
+
+model:
+  family: multi_head_xgboost
+  rr_multiples: [1.5]
+
+training:
+  lookback_days: 730
+  step_days: 30
+  embargo_days: 1
+  dynamic_features: true
+  optuna: false
+  optuna_trials: 10
+  meta_model: false
+  meta_model_target: diagnostic_binary
+  train_side: long
+  calibration_method: isotonic
+
+decision:
+  selection_mode: raw_ev
+  ev_threshold: 0.0
+  dynamic_ev_threshold:
+    enabled: true
+    grid: [0.075, 0.10, 0.125, 0.15, 0.175, 0.20, 0.25, 0.30]
+    min_trades: 20
+    objective: mean_trade_return
+  risk_pct: 0.05
+  cost_R: 0.05
+  m05_threshold: 0.10
+  long_only_filter: true
+  kelly_fraction: 0.5
+  min_risk_pct: 0.01
+
+stop_distance:
+  rule: atr
+  atr_period: 14
+  k: 0.3
+
+position_sizing:
+  base_multiplier: 1.0
+  margin_threshold_equity: 2000.0
+  margin_multiplier_above_threshold: 2.0
+  high_margin_threshold_equity: 25000.0
+  high_margin_multiplier_above_threshold: 4.0
+  buying_power_utilization: 0.95

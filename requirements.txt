@@ -1,0 +1,11 @@
+matplotlib==3.10.8
+numpy==2.4.2
+optuna==4.7.0
+pandas==3.0.1
+pandas_market_calendars==5.3.0
+pyarrow==23.0.0
+python-dotenv==1.2.1
+PyYAML==6.0.3
+Requests==2.32.5
+scikit_learn==1.8.0
+xgboost==3.2.0

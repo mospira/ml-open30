@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "architecture_id": "v1_1",
+  "name": "Open30 v1.1 Single Head Dynamic Threshold",
+  "description": "Single-head raw-EV XGBoost architecture for the 30-minute open-session strategy. Trains and selects only the m=1.5 head, then tunes the EV threshold on each retrain using the held-out meta slice of the rolling training window.\n",
+  "model": {
+    "family": "multi_head_xgboost",
+    "rr_multiples": [
+      1.5
+    ]
+  },
+  "training": {
+    "lookback_days": 730,
+    "step_days": 30,
+    "embargo_days": 1,
+    "dynamic_features": true,
+    "optuna": false,
+    "optuna_trials": 10,
+    "meta_model": false,
+    "meta_model_target": "diagnostic_binary",
+    "train_side": "long",
+    "calibration_method": "isotonic"
+  },
+  "decision": {
+    "selection_mode": "raw_ev",
+    "ev_threshold": 0.0,
+    "dynamic_ev_threshold": {
+      "enabled": true,
+      "grid": [
+        0.0,
+        0.025,
+        0.05,
+        0.075,
+        0.1,
+        0.125,
+        0.15,
+        0.175,
+        0.2,
+        0.25,
+        0.3
+      ],
+      "min_trades": 20,
+      "objective": "mean_trade_return"
+    },
+    "risk_pct": 0.05,
+    "cost_R": 0.05,
+    "m05_threshold": 0.1,
+    "long_only_filter": true,
+    "kelly_fraction": 0.5,
+    "min_risk_pct": 0.01
+  },
+  "stop_distance": {
+    "rule": "atr",
+    "atr_period": 14,
+    "k": 0.3
+  },
+  "source_path": "architectures/v1_1.yaml",
+  "resolved_rr_multiples": [
+    1.5
+  ],
+  "resolved_training": {
+    "lookback_days": 730,
+    "step_days": 30,
+    "embargo_days": 1,
+    "dynamic_features": true,
+    "optuna": false,
+    "optuna_trials": 10,
+    "meta_model": false,
+    "meta_model_target": "diagnostic_binary",
+    "train_side": "long",
+    "calibration_method": "isotonic"
+  },
+  "resolved_decision": {
+    "ev_threshold": 0.0,
+    "dynamic_ev_threshold": {
+      "enabled": true,
+      "grid": [
+        0.0,
+        0.025,
+        0.05,
+        0.075,
+        0.1,
+        0.125,
+        0.15,
+        0.175,
+        0.2,
+        0.25,
+        0.3
+      ],
+      "min_trades": 20,
+      "objective": "mean_trade_return"
+    },
+    "risk_pct": 0.05,
+    "cost_R": 0.05,
+    "m05_threshold": 0.1,
+    "long_only_filter": true,
+    "kelly_fraction": 0.5,
+    "min_risk_pct": 0.01,
+    "selection_mode": "raw_ev"
+  },
+  "resolved_stop_distance": {
+    "rule": "atr",
+    "atr_period": 14,
+    "k": 0.3,
+    "bps": 20.0,
+    "atr_column": null
+  }
+}

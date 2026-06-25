@@ -1,0 +1,58 @@
+# configs/pipeline.yaml
+
+project:
+  timezone: America/New_York
+
+data_window:
+  start_date: "2010-02-02"  # historical fetch start; warm-up yields 2011 backtest rows
+  end_date: "2026-05-31"    # ingestion upper bound
+
+universe:
+  name: top25
+  use_historical_membership: false
+  file: data/interim/canonical/universe_top25.json
+
+benchmarks:
+  tickers: [SPY, QQQ]
+  description: >
+    Index ETFs fetched alongside the universe for benchmark alignment
+    features.
+
+sessions:
+  entry_time: "09:31:00"
+  horizon_minutes: 30
+
+data_sources:
+  bars:
+    provider: alphavantage
+    endpoint: TIME_SERIES_INTRADAY
+    resolution: 1min
+    extended_hours: true
+    columns: [timestamp, ticker, open, high, low, close, volume]
+    output: data/raw/candles_1m.parquet
+    script: src/ingestion/fetch_bars.py
+
+  sentiment:
+    provider: alphavantage
+    endpoint: NEWS_SENTIMENT
+    output_dir: data/raw/news_daily/
+    canonical_output: data/interim/canonical/sentiment_scores.parquet
+    scripts:
+      fetch: src/ingestion/fetch_sentiment.py
+      build: src/canonicalize/build_sentiment.py
+
+feature_engineering:
+  config: configs/features.yaml
+  output_dir: data/processed/features/
+  observation_delay_minutes: 1
+  calendar_source: pandas_market_calendars
+
+labeling:
+  config: configs/labels.yaml
+  output_dir: data/processed/labels/
+  rr_multiples: [0.5, 1.0, 1.5, 2.0]
+  dist_rule: atr
+  atr_period: 14
+  ambiguity_policy:
+    training: DROP
+    backtest: WORST_CASE

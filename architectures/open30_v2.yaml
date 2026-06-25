@@ -1,0 +1,47 @@
+schema_version: 1
+architecture_id: open30_v2
+name: Open30 Daily ATR XGBoost Meta Selector
+description: >
+  Canonical multi-head XGBoost architecture for the 30-minute open-session
+  strategy. Each head proposes its top EV trade, then an expected-return
+  meta-model reranks those head winners and can veto the day when predicted
+  return is non-positive.
+
+model:
+  family: multi_head_xgboost
+  rr_multiples: [0.5, 1.0, 1.5, 2.0]
+
+training:
+  lookback_days: 730
+  step_days: 30
+  embargo_days: 1
+  dynamic_features: true
+  optuna: false
+  optuna_trials: 10
+  meta_model: true
+  meta_model_target: expected_return
+  train_side: long
+  calibration_method: isotonic
+
+decision:
+  selection_mode: meta_expected_return
+  ev_threshold: 0.0
+  risk_pct: 0.05
+  cost_R: 0.05
+  m05_threshold: 0.10
+  long_only_filter: true
+  kelly_fraction: 0.5
+  min_risk_pct: 0.01
+
+stop_distance:
+  rule: atr
+  atr_period: 14
+  k: 0.3
+
+position_sizing:
+  base_multiplier: 1.0
+  margin_threshold_equity: 2000.0
+  margin_multiplier_above_threshold: 2.0
+  high_margin_threshold_equity: 25000.0
+  high_margin_multiplier_above_threshold: 4.0
+  buying_power_utilization: 0.95

@@ -1,0 +1,17 @@
+{
+  "generated_at_utc": "2026-06-04T16:09:50.323585+00:00",
+  "method": "Select stop distance only at retrain boundaries using prior out-of-sample candidate trades.",
+  "candidate_stop_k": [
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5
+  ],
+  "step_days": 30,
+  "selector_lookback_days": 110,
+  "selector_min_trades": 20,
+  "selector_objective": "mean_position_return",
+  "initial_k": 0.3,
+  "starting_capital": 2000.0
+}

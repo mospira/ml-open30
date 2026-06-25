@@ -1,0 +1,9 @@
+title: Open30 Research
+description: Reproducible research report for a 30-minute open-session equity strategy.
+baseurl: /ml-open30
+markdown: kramdown
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

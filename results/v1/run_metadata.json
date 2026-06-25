@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-06-04T02:20:19.026007+00:00",
+  "architecture_id": "open30_v1",
+  "architecture_source_path": "architectures/open30_v1.yaml",
+  "reports_subdir": "v1",
+  "output_prefix": "",
+  "dataset_path": "data/processed/dataset_open30m.parquet",
+  "dataset_rows": 195166,
+  "trading_days": 3983,
+  "selection_mode": "raw_ev",
+  "stop_distance": {
+    "rule": "atr",
+    "atr_period": 14,
+    "k": 0.3,
+    "bps": 20.0,
+    "atr_column": null
+  },
+  "position_sizing": {
+    "base_multiplier": 1.0,
+    "margin_threshold_equity": 2000.0,
+    "margin_multiplier_above_threshold": 4.0,
+    "buying_power_utilization": 0.95
+  },
+  "meta_model_target": null,
+  "args": {
+    "architecture": null,
+    "threshold": 0.0,
+    "dataset_path": "data/processed/dataset_open30m.parquet",
+    "model_dir": "models/v1",
+    "capital": 2000.0,
+    "risk": 0.05,
+    "cost_R": 0.05,
+    "lookback": 730,
+    "step": 30,
+    "embargo": 1,
+    "m_05": false,
+    "m_10": false,
+    "m_15": false,
+    "m_20": false,
+    "m_values": [],
+    "best_ev": false,
+    "dynamic_features": true,
+    "optuna": false,
+    "optuna_trials": 10,
+    "meta_model": false,
+    "output_prefix": ""
+  },
+  "strategies": [
+    "m=1.5"
+  ]
+}

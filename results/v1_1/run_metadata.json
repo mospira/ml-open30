@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-05-27T16:00:07.618655+00:00",
+  "architecture_id": "v1_1",
+  "architecture_source_path": "architectures/v1_1.yaml",
+  "reports_subdir": "v1_1",
+  "output_prefix": "",
+  "dataset_path": "data/processed/dataset_open30m.parquet",
+  "dataset_rows": 195166,
+  "trading_days": 3983,
+  "selection_mode": "raw_ev",
+  "meta_model_target": null,
+  "args": {
+    "architecture": null,
+    "threshold": 0.0,
+    "dataset_path": "data/processed/dataset_open30m.parquet",
+    "model_dir": "models/v1",
+    "capital": 100.0,
+    "risk": 0.05,
+    "cost_R": 0.05,
+    "lookback": 730,
+    "step": 30,
+    "embargo": 1,
+    "m_05": false,
+    "m_10": false,
+    "m_15": false,
+    "m_20": false,
+    "m_values": [],
+    "best_ev": false,
+    "dynamic_features": true,
+    "optuna": false,
+    "optuna_trials": 10,
+    "meta_model": false,
+    "output_prefix": ""
+  },
+  "strategies": [
+    "m=1.5"
+  ]
+}

@@ -1,0 +1,18 @@
+services:
+  research:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: open30-research:latest
+    container_name: open30-research
+    working_dir: /research
+    init: true
+    stdin_open: true
+    tty: true
+    environment:
+      TZ: America/New_York
+      ALPHAVANTAGE_API_KEY: ${ALPHAVANTAGE_API_KEY:-}
+      OPEN30_XGB_DEVICE: ${OPEN30_XGB_DEVICE:-cpu}
+    volumes:
+      - .:/research
+    command: ["sh"]

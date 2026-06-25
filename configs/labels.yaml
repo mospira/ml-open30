@@ -1,0 +1,66 @@
+# configs/labels.yaml
+# Label specification for research.
+#
+# One row per (date, ticker, side). For each reward multiple m, the labeler
+# produces: y_type_m_<m>, y_R_m_<m>, y_hit_minute_m_<m>, y_ambig_m_<m>.
+
+instances:
+  observation_window: "09:30:00"
+  entry_time: "09:31:00"
+  horizon_end_time: "10:00:00"
+  entry_price: open_0931
+  exit_price: close_0959
+  sides: [long, short]
+
+stop_distance:
+  dist_rule: atr
+  k: 0.3
+  atr_period: 14
+
+rr_multiples: [0.5, 1.0, 1.5, 2.0]
+
+price_levels:
+  long:
+    stop: "entry_price - dist"
+    target: "entry_price + dist * m"
+  short:
+    stop: "entry_price + dist"
+    target: "entry_price - dist * m"
+
+outcome_scan:
+  bars: 1min
+  window: "09:31 - 09:59"
+  types:
+    SL: 0
+    TP: 1
+    TIME: 2
+    AMBIG: 3
+
+columns_per_m:
+  y_type:
+    description: "Outcome enum: 0=SL, 1=TP, 2=TIME, 3=AMBIG"
+    column_pattern: "y_type_m_{m}"
+
+  y_R:
+    description: "Payoff in R units"
+    column_pattern: "y_R_m_{m}"
+    values:
+      TP: "+m"
+      SL: "-1"
+      TIME: "(exit_price - entry_price) / dist [long] or (entry_price - exit_price) / dist [short]"
+      AMBIG: "NaN when policy = DROP"
+
+  y_hit_minute:
+    description: "Minute offset (0..28) when TP/SL was hit, else -1"
+    column_pattern: "y_hit_minute_m_{m}"
+
+  y_ambig:
+    description: "True when stop and target touched in the same 1-min bar"
+    column_pattern: "y_ambig_m_{m}"
+
+ambiguity_policy:
+  training: DROP
+  backtest: WORST_CASE
+
+output:
+  dir: data/processed/labels/
