@@ -141,7 +141,13 @@ The canonical modeling artifact is:
 data/processed/dataset_open30m.parquet
 ```
 
-Build it with:
+If you do not want to rerun ingestion and feature generation, download the
+hosted dataset from Hugging Face and place `dataset_open30m.parquet` at that
+path:
+
+[mospira/open30-equity-features](https://huggingface.co/datasets/mospira/open30-equity-features)
+
+To rebuild the artifact locally instead, run:
 
 ```bash
 python run_pipeline.py --architecture architectures/open30_v2.yaml

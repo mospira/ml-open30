@@ -58,6 +58,11 @@ for the main full-history runs. The public pipeline config starts ingestion on
 can overstate historical performance through survivorship and concentration
 effects.
 
+The assembled `dataset_open30m.parquet` artifact is also available on Hugging
+Face for readers who want to inspect or reuse the feature table without
+rerunning ingestion and feature generation:
+[mospira/open30-equity-features](https://huggingface.co/datasets/mospira/open30-equity-features).
+
 ## Strategy Definition
 
 The core strategy invariants are:
@@ -191,7 +196,11 @@ important tested improvements were:
 
 ## Reproducibility
 
-The public export did not rerun pipelines. To reproduce results locally:
+The public export did not rerun pipelines. To reproduce results locally, either
+download `dataset_open30m.parquet` from
+[mospira/open30-equity-features](https://huggingface.co/datasets/mospira/open30-equity-features)
+and place it at `data/processed/dataset_open30m.parquet`, or rebuild it with
+the full pipeline:
 
 ```bash
 python run_pipeline.py --architecture architectures/open30_v2.yaml

@@ -2,6 +2,14 @@
 
 Large data artifacts are intentionally not tracked.
 
+The assembled feature and label dataset is hosted on Hugging Face for users
+who do not want to rerun Alpha Vantage ingestion and feature generation:
+
+[mospira/open30-equity-features](https://huggingface.co/datasets/mospira/open30-equity-features)
+
+Download `dataset_open30m.parquet` from that dataset and place it at
+`data/processed/dataset_open30m.parquet` before running backtests or retraining.
+
 Expected generated paths:
 
 - `data/raw/candles_1m.parquet`
