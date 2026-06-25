@@ -1,11 +1,12 @@
 # Open30 Research
 
+[Project site](https://mospira.github.io/ml-open30/) |
+[Research report](https://mospira.github.io/ml-open30/research_report/)
+
 A reproducible research stack for a 30-minute open-session equity
 strategy. This contains the data pipeline, feature and label logic,
 walk-forward backtest code, architecture manifests, curated result artifacts,
 and a GitHub Pages research report.
-
-The hosted report source is in [site/research_report.md](site/research_report.md).
 
 ## Repository Map
 

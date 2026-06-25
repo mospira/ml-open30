@@ -33,7 +33,7 @@ calibration.
 
 ## Problem Statement
 
-The strategy asks one practical question: shortly after the open, is there one
+The strategy asks this: shortly after the open, is there one
 liquid large-cap equity candidate with enough expected return to justify a
 short-horizon trade through the first 30 minutes?
 
