@@ -5,21 +5,20 @@
 
 A reproducible research stack for a 30-minute open-session equity
 strategy. This contains the data pipeline, feature and label logic,
-walk-forward backtest code, architecture manifests, curated result artifacts,
-and a GitHub Pages research report.
+walk-forward backtest code, architecture manifests, and curated result artifacts.
 
 ## Repository Map
 
-- `architectures/`: versioned strategy manifests.
-- `configs/`: pipeline, feature, and label configuration.
-- `src/`: ingestion, canonicalization, feature, label, modeling, and backtest code.
-- `run_pipeline.py`: raw data to assembled modeling dataset.
-- `run_backtest.py`: rolling walk-forward retraining and simulation.
-- `run_retrain_latest.py`: local model bundle export.
-- `results/`: curated result artifacts tracked for the public showcase.
+- `architectures/`: versioned strategy manifests
+- `configs/`: pipeline, feature, and label configuration
+- `src/`: ingestion, canonicalization, feature, label, modeling, and backtest code
+- `run_pipeline.py`: raw data to assembled modeling dataset
+- `run_backtest.py`: rolling walk-forward retraining and simulation
+- `run_retrain_latest.py`: local model bundle export
+- `results/`: curated result artifacts tracked for the public showcase
 - `reports/`: generated full report outputs
 - `models/`: generated model bundles
-- `site/`: GitHub Pages source for the research report.
+- `site/`: GitHub Pages source for the report
 
 ## Research Flow
 
